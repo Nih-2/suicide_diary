@@ -16,7 +16,7 @@ class AddPage(ft.Column):
             min_lines=3,
             height=100,
             autofocus=True,
-            width=400
+            # width=400
         )
 
         self.controls = [
@@ -56,4 +56,5 @@ class AddPage(ft.Column):
             self.diary.add_note(react, note)
             self.add_tf.value = ''
             self.show_message("Збережено", 'green')
+
 
