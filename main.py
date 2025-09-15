@@ -98,7 +98,9 @@ class DiaryApp:
 
 
 if __name__ == "__main__":
-    app = DiaryApp()
+    db = DataBase()
+    app = DiaryApp(db)
     # ft.app(target=app.main, view=ft.AppView.WEB_BROWSER, port=8080, assets_dir="assets")
     ft.app(target=app.main, view=ft.AppView.FLET_APP)
+
 
