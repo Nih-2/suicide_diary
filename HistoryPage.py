@@ -22,7 +22,7 @@ class HistoryPage(ft.Column):
                 ft.Text(
                     'Всі нотатки:',
                     # font_family='Times New Roman',
-                    size=16, weight='bold', height=40, width=500, text_align='center'
+                    size=16, weight='bold', height=40, width=400, text_align='center'
                 )
             ], alignment=ft.MainAxisAlignment.CENTER
             ),
@@ -88,3 +88,4 @@ class HistoryPage(ft.Column):
                     )
                 )
         self.page.update()
+
