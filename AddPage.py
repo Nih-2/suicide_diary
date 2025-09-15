@@ -16,7 +16,7 @@ class AddPage(ft.Column):
             min_lines=3,
             height=100,
             autofocus=True,
-            width=500
+            width=400
         )
 
         self.controls = [
@@ -26,12 +26,12 @@ class AddPage(ft.Column):
                         ft.Text(
                             'Додати нотатку:',
                             # font_family='Times New Roman',
-                            size=16, weight='bold', height=40, width=500, text_align='center'),
+                            size=16, weight='bold', height=40, width=400, text_align='center'),
                         self.add_tf,
                         ft.Text(
                             '\nВиберіть настрій:',
                             # font_family='Times New Roman',
-                            size=16, weight='bold', height=100, width=500, text_align='center'),
+                            size=16, weight='bold', height=100, width=400, text_align='center'),
                         ft.Row(
                             [
                                 ft.IconButton(icon=ft.Icons.ADD, icon_color='green', on_click=lambda e: self.add(1), width=100, icon_size=42),
@@ -39,7 +39,7 @@ class AddPage(ft.Column):
                             ],
                             expand=True,
                             # alignment=ft.MainAxisAlignment.CENTER ,
-                            spacing=200
+                            spacing=150
                         )
                     ], horizontal_alignment=ft.CrossAxisAlignment.CENTER
                 )
@@ -56,3 +56,4 @@ class AddPage(ft.Column):
             self.diary.add_note(react, note)
             self.add_tf.value = ''
             self.show_message("Збережено", 'green')
+
