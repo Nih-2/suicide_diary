@@ -4,9 +4,13 @@ from Diary import Diary
 from MainPage import MainPage
 from HistoryPage import HistoryPage
 from AddPage import AddPage
+from DataBase import DataBase
 
 
 class DiaryApp:
+    def __init__(self, db: DataBase):
+        self.db = db
+ 
     def main(self, page: ft.Page):
         self.page = page
         self.page.title = "Записки С"
@@ -34,7 +38,7 @@ class DiaryApp:
         self.page.horizontal_alignment = ft.MainAxisAlignment.CENTER
         # self.page.scroll = "adaptive" # ft.ScrollMode.AUTO
 
-        self.diary = Diary()
+        self.diary = Diary(self.db)
 
         self.snack_bar = ft.SnackBar(
             ft.Text(value='', color="white"),
@@ -94,6 +98,10 @@ class DiaryApp:
 
 
 if __name__ == "__main__":
-    app = DiaryApp()
-    # ft.app(target=app.main, view=ft.AppView.WEB_BROWSER, port=8080, assets_dir="assets")
-    ft.app(target=app.main, view=ft.AppView.FLET_APP)
+    db = DataBase()
+    app = DiaryApp(db)
+    ft.app(target=app.main, view=ft.AppView.WEB_BROWSER, port=8080, assets_dir="assets")
+    # ft.app(target=app.main, view=ft.AppView.FLET_APP)
+
+
+

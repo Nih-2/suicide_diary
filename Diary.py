@@ -1,9 +1,12 @@
-import sqlite3
+# import sqlite3
 from datetime import datetime, timedelta
+# from DataBase import DataBase
 
 
 class Diary:
-    def __init__(self):
+    def __init__(self, db):
+        self.db = db
+        
         self.notes_list = []
         self.day_rating = 0
         self.week_rating = 0
@@ -17,57 +20,80 @@ class Diary:
 
 
     def first(self):
-        with sqlite3.connect("diary_data.db") as data_base:
-            # data_base.execute("PRAGMA foreign_keys = ON")
-            cursor = data_base.cursor()
-
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS notes (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+        self.db.execute("""CREATE TABLE IF NOT EXISTS notes (    
+                id SERIAL PRIMARY KEY,
                 date TEXT NOT NULL,
                 react INTEGER NOT NULL,
                 note TEXT
-                )"""
-            )
-            data_base.commit()
+                )""",
+                commit=True
+        )
+
+        
+        # with sqlite3.connect("diary_data.db") as data_base:
+            # data_base.execute("PRAGMA foreign_keys = ON")
+          #  cursor = data_base.cursor()
+
+           # cursor.execute("""
+            #    CREATE TABLE IF NOT EXISTS notes (
+             #   id INTEGER PRIMARY KEY AUTOINCREMENT,
+              #  date TEXT NOT NULL,
+               # react INTEGER NOT NULL,
+                #note TEXT
+                #)"""
+            #)
+            #data_base.commit()
 
 
     def auto_run(self):
-        with sqlite3.connect("diary_data.db") as data_base:
-            cursor = data_base.cursor()
+        #with sqlite3.connect("diary_data.db") as data_base:
+            #cursor = data_base.cursor()
 
-            cursor.execute("SELECT * FROM notes")
-            notes = cursor.fetchall()
-            for note in notes:
-                id = note[0]
-                date = datetime.strptime(note[1], "%d.%m.%Y %H:%M")
-                react = note[2]
-                note = note[3]
+            # cursor.execute("SELECT * FROM notes")
+        notes = self.db.execute("SELECT * FROM notes", fetch=True)
+            
+            # cursor.fetchall()
+        for note in notes:
+            id = note[0]
+            date = datetime.strptime(note[1], "%d.%m.%Y %H:%M")
+            react = note[2]
+            note = note[3]
 
-                self.notes_list.append([id, date, react, note])
+            self.notes_list.append([id, date, react, note])
 
 
     def add_note(self, react, note):
         date = datetime.now()
 
-        with sqlite3.connect("diary_data.db") as data_base:
-            cursor = data_base.cursor()
+        #with sqlite3.connect("diary_data.db") as data_base:
+            #cursor = data_base.cursor()
 
-            cursor.execute("INSERT INTO notes (date, react, note) VALUES(?,?,?)",
-                (date.strftime("%d.%m.%Y %H:%M"), react, note)
-            )
-            data_base.commit()
-            id = cursor.lastrowid
+            #self.db.execute("INSERT INTO notes (date, react, note) VALUES(%s, %s, %s)",
+            #    (date.strftime("%d.%m.%Y %H:%M"), react, note), commit=True
+            #)
+            # data_base.commit()
 
-            self.notes_list.append([id, date, react, note])
+        # ID вставленого рядка
+        result  = self.db.execute("""
+            INSERT INTO notes (date, react, note)
+            VALUES (%s, %s, %s)
+            RETURNING id
+        """, (date.strftime("%d.%m.%Y %H:%M"), react, note), commit=True, fetch=True)
+
+        id = result[0][0]  # self.db.fetchone()[0]
+        
+        
+            # id = cursor.lastrowid
+
+        self.notes_list.append([id, date, react, note])
 
 
     def delete_note(self, id):
-        with sqlite3.connect("diary_data.db") as data_base:
-            cursor = data_base.cursor()
+        #with sqlite3.connect("diary_data.db") as data_base:
+        #    cursor = data_base.cursor()
 
-            cursor.execute("DELETE FROM notes WHERE id = ?", (id,))
-            data_base.commit()
+        self.db.execute("DELETE FROM notes WHERE id = %s", (id,), commit=True,)
+            # data_base.commit()
 
 
     def count_rating(self):
@@ -82,10 +108,17 @@ class Diary:
                 self.day_rating += note[2]
 
         for note in self.notes_list:
-            # print((today + timedelta(days=7)))
-            if note[1] <= (today + timedelta(days=7)) and note[1].weekday() <= today.weekday():
+            week_start = today - timedelta(days=today.weekday())  # понеділок поточного тижня
+            week_end = week_start + timedelta(days=6)
+
+            if week_start.date() <= note[1].date() <= week_end.date():
                 self.week_rating += note[2]
+
+        #for note in self.notes_list:
+            #if note[1] <= (today + timedelta(days=7)) and note[1].weekday() <= today.weekday():
+                #self.week_rating += note[2]
 
         for note in self.notes_list:
             if note[1].month == today.month:
+
                 self.month_rating += note[2]
