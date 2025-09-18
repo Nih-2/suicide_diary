@@ -1,6 +1,7 @@
 # import sqlite3
 from datetime import datetime, timedelta
 # from DataBase import DataBase
+from zoneinfo import ZoneInfo
 
 
 class Diary:
@@ -63,7 +64,7 @@ class Diary:
 
 
     def add_note(self, react, note):
-        date = datetime.now()
+        date = datetime.now(ZoneInfo("Europe/Kyiv"))
 
         #with sqlite3.connect("diary_data.db") as data_base:
             #cursor = data_base.cursor()
@@ -122,3 +123,4 @@ class Diary:
             if note[1].month == today.month:
 
                 self.month_rating += note[2]
+
