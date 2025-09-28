@@ -13,7 +13,7 @@ class AddPage(ft.Column):
         self.add_tf = ft.TextField(
             label='Введіть коментар',
             multiline=True,
-            min_lines=3,
+            min_lines=4,
             height=100,
             autofocus=True,
             # width=400
@@ -56,5 +56,6 @@ class AddPage(ft.Column):
             self.diary.add_note(react, note)
             self.add_tf.value = ''
             self.show_message("Збережено", 'green')
+
 
 
